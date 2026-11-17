@@ -25,18 +25,19 @@ $email = strtolower(trim($_POST['email'] ?? ''));
 $consent = $_POST['consent'] ?? '';
 
 // Validate name.
+$nameLength = preg_match_all('/./us', $name);
+$hasControlCharacters = preg_match('/[\p{C}]/u', $name);
+
 if (
     $name === '' ||
     strlen($name) > 400 ||
-    preg_match('/[\p{C}]/u', $name)
+    $nameLength === false ||
+    $nameLength > 100 ||
+    $hasControlCharacters !== 0
 ) {
-    redirectWithMessage('Please enter a valid name (maximum 100 characters).');
-}
-
-if (function_exists('mb_strlen')) {
-    if (mb_strlen($name, 'UTF-8') > 100) {
-        redirectWithMessage('Your name cannot exceed 100 characters.');
-    }
+    redirectWithMessage(
+        'Please enter a valid name (maximum 100 characters).'
+    );
 }
 
 // Validate email.
