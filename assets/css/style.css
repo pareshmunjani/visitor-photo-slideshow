@@ -313,3 +313,24 @@ button:focus-visible {
         margin-bottom: 20px;
     }
 }
+
+.flash-message {
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 22px;
+    font-size: 13px;
+    line-height: 1.6;
+    font-weight: 600;
+}
+
+.flash-message.success {
+    color: #166534;
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+}
+
+.flash-message.error {
+    color: #b91c1c;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+}

@@ -1,7 +1,14 @@
 
 <?php
-// Visitor Photo Slideshow - Visitor Upload Page
+
+session_start();
+
+$flash = $_SESSION['flash'] ?? null;
+
+unset($_SESSION['flash']);
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,6 +41,14 @@
     </p>
 
 </div>
+
+<?php if ($flash): ?>
+
+    <div class="flash-message <?= htmlspecialchars($flash['type']) ?>">
+        <?= htmlspecialchars($flash['message']) ?>
+    </div>
+
+<?php endif; ?>
 
 
             <form action="upload.php" method="POST"
