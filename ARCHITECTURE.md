@@ -11,3 +11,20 @@
 8. Newly uploaded photographs are included without reloading the page.
 
 The slideshow does not retrieve or display visitor email addresses.
+
+## Two Application Usage Modes
+
+### Mode 1: Phone Upload and TV Display
+
+- The TV or computer opens display.php once.
+- Visitors access index.php using their phones.
+- Uploaded photographs are stored in MySQL and the uploads directory.
+- The running slideshow automatically retrieves new photographs.
+
+### Mode 2: Same Computer
+
+- The visitor opens index.php.
+- After a successful upload, a slideshow link appears.
+- The visitor can open display.php in a new browser tab.
+
+Both modes use the same shared slideshow and database.

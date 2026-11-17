@@ -17,6 +17,7 @@ let currentPhotoId = null;
 let isChanging = false;
 
 // Retrieve photographs from PHP.
+
 async function loadPhotos() {
 
     try {
@@ -35,12 +36,13 @@ async function loadPhotos() {
             throw new Error("Photo retrieval failed.");
         }
 
+        const previousPhotoId = currentPhotoId;
+
         photos = data.photos;
 
         photoCounter.textContent =
             photos.length + (photos.length === 1 ? " PHOTO" : " PHOTOS");
 
-        // Show waiting screen when no photos exist.
         if (photos.length === 0) {
 
             photoStage.classList.add("hidden");
@@ -52,20 +54,20 @@ async function loadPhotos() {
             return;
         }
 
-        // Preserve the currently displayed photograph.
-        if (currentPhotoId !== null) {
+        // Find the currently displayed photo in the updated list.
+        const existingIndex = photos.findIndex(
+            photo => photo.id === previousPhotoId
+        );
 
-            const existingIndex = photos.findIndex(
-                photo => photo.id === currentPhotoId
-            );
+        if (existingIndex !== -1) {
 
             currentIndex = existingIndex;
 
-        }
+        } else {
 
-        // Display the first photo when starting.
-        if (currentIndex === -1) {
+            // If the current photo was removed, show the next available one.
             showPhoto(0);
+
         }
 
     } catch (error) {

@@ -42,13 +42,30 @@ unset($_SESSION['flash']);
 
 </div>
 
+
 <?php if ($flash): ?>
 
     <div class="flash-message <?= htmlspecialchars($flash['type']) ?>">
+
         <?= htmlspecialchars($flash['message']) ?>
+
+        <?php if ($flash['type'] === 'success'): ?>
+
+            <a
+                href="display.php"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="slideshow-link"
+            >
+                View Photo Slideshow →
+            </a>
+
+        <?php endif; ?>
+
     </div>
 
 <?php endif; ?>
+
 
 
             <form action="upload.php" method="POST"
