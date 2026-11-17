@@ -2,6 +2,15 @@
 <?php
 session_start();
 
+// Only visitors who have successfully uploaded photos can view this slideshow.
+if (
+    !isset($_SESSION['visitor_id']) ||
+    (int) $_SESSION['visitor_id'] <= 0
+) {
+    header('Location: index.php');
+    exit;
+}
+
 $successMessage = $_SESSION['success_message'] ?? '';
 unset($_SESSION['success_message']);
 ?>
@@ -12,7 +21,7 @@ unset($_SESSION['success_message']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Visitor Memories | Slideshow</title>
+    <title>My Memories | Slideshow</title>
 
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -22,30 +31,36 @@ unset($_SESSION['success_message']);
     <main class="slideshow-container">
 
         <header class="slideshow-heading">
-            <span class="slideshow-label">SHARED MEMORIES</span>
+
+            <span class="slideshow-label">YOUR MEMORIES</span>
 
             <h1>Moments Worth Remembering</h1>
 
-            <p>Celebrating the memories shared by our visitors.</p>
+            <p>Your photographs, your memories.</p>
 
             <?php if ($successMessage !== ''): ?>
                 <p class="success-message">
                     <?= htmlspecialchars($successMessage, ENT_QUOTES, 'UTF-8') ?>
                 </p>
             <?php endif; ?>
+
+            <a href="index.php" class="back-home-link">
+                &larr; Back to Home
+            </a>
+
         </header>
 
         <section id="waiting-message" class="waiting-message">
             <div class="waiting-icon">📸</div>
             <h2>Waiting for Memories</h2>
-            <p>New photographs will appear here automatically.</p>
+            <p>Your uploaded photographs will appear here automatically.</p>
         </section>
 
         <section id="photo-stage" class="photo-stage hidden">
             <img
                 id="slideshow-image"
                 src=""
-                alt="Visitor shared photograph"
+                alt="Your uploaded photograph"
             >
         </section>
 

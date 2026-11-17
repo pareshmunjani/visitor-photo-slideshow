@@ -881,3 +881,17 @@ body.slideshow-page {
     }
 }
 
+.back-home-link {
+    display: inline-block;
+    margin-top: 16px;
+    color: #c4b5fd;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.back-home-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+

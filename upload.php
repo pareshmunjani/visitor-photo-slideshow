@@ -265,9 +265,13 @@ try {
     }
 
     // Save all database changes.
-    $pdo->commit();
+$pdo->commit();
 
-    $_SESSION['success_message'] = 'Photos uploaded successfully!';
+// Remember which visitor uploaded these photos.
+session_regenerate_id(true);
+$_SESSION['visitor_id'] = $visitorId;
+
+$_SESSION['success_message'] = 'Photos uploaded successfully!';
 
 header('Location: display.php');
 exit;
