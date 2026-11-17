@@ -19,16 +19,22 @@
 
         <section class="upload-card">
 
-            <div class="header">
-                <div class="header-icon">📸</div>
+            
+<div class="header">
 
-                <h1>Visitor Photo Slideshow</h1>
+    <div class="header-icon">📸</div>
 
-                <p>
-                    Welcome! Share your favourite moments with us.
-                    Your photos may appear on our shared display.
-                </p>
-            </div>
+    <span class="eyebrow">A PLACE FOR YOUR MEMORIES</span>
+
+    <h1>Every Visit Tells a Story.</h1>
+
+    <p>
+        Share your favourite moments with us.
+        Let's make memories worth remembering.
+    </p>
+
+</div>
+
 
             <form action="upload.php" method="POST"
                   enctype="multipart/form-data">
