@@ -266,10 +266,10 @@ try {
     // Save all database changes.
     $pdo->commit();
 
-    redirectWithMessage(
-        'Your photos have been uploaded successfully. Thank you for sharing your memories!',
-        'success'
-    );
+    $_SESSION['success_message'] = 'Photos uploaded successfully!';
+
+header('Location: display.php');
+exit;
 
 } catch (Throwable $e) {
 

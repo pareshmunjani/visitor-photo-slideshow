@@ -2,22 +2,38 @@
 const API_URL = "api/slideshow-photos.php";
 
 const SLIDE_DURATION = 2000;
-const REFRESH_INTERVAL = 2000;
+const REFRESH_INTERVAL = 5000;
 
 const imageElement = document.getElementById("slideshow-image");
 const photoStage = document.getElementById("photo-stage");
-
 const waitingMessage = document.getElementById("waiting-message");
 const photoCounter = document.getElementById("photo-counter");
 
+const pausePlayButton = document.getElementById("pause-play-button");
+const playbackStatus = document.getElementById("playback-status");
+
 let photos = [];
 let currentIndex = -1;
-
 let currentPhotoId = null;
+
+let isPaused = false;
 let isChanging = false;
+let pendingIndex = null;
 
-// Retrieve photographs from PHP.
 
+// Pause and Play button
+pausePlayButton.addEventListener("click", () => {
+
+    isPaused = !isPaused;
+
+    pausePlayButton.textContent = isPaused ? "Play" : "Pause";
+
+    playbackStatus.textContent = isPaused ? "Paused" : "Playing";
+
+});
+
+
+// Retrieve photographs from PHP
 async function loadPhotos() {
 
     try {
@@ -36,8 +52,6 @@ async function loadPhotos() {
             throw new Error("Photo retrieval failed.");
         }
 
-        const previousPhotoId = currentPhotoId;
-
         photos = data.photos;
 
         photoCounter.textContent =
@@ -51,37 +65,48 @@ async function loadPhotos() {
             currentIndex = -1;
             currentPhotoId = null;
 
+            pausePlayButton.disabled = true;
+            playbackStatus.textContent = "Waiting for photos";
+
             return;
         }
 
-        // Find the currently displayed photo in the updated list.
+        pausePlayButton.disabled = false;
+
+        // Keep the currently displayed photo if it still exists.
         const existingIndex = photos.findIndex(
-            photo => photo.id === previousPhotoId
+            photo => photo.id === currentPhotoId
         );
 
         if (existingIndex !== -1) {
 
             currentIndex = existingIndex;
 
-        } else {
+        } else if (!isChanging) {
 
-            // If the current photo was removed, show the next available one.
+            // If the current photo no longer exists, show the first one.
             showPhoto(0);
 
         }
+
+        playbackStatus.textContent = isPaused ? "Paused" : "Playing";
 
     } catch (error) {
 
         console.error("Slideshow error:", error);
 
+        // Keep the currently displayed image visible if the API fails.
+
     }
+
 }
 
 
-// Display a photograph.
+// Display a photograph
 function showPhoto(index) {
 
     if (photos.length === 0 || isChanging) {
+        pendingIndex = index;
         return;
     }
 
@@ -90,11 +115,7 @@ function showPhoto(index) {
     const selectedPhoto = photos[index];
 
     isChanging = true;
-
-    waitingMessage.classList.add("hidden");
-    photoStage.classList.remove("hidden");
-
-    imageElement.classList.add("changing");
+    pendingIndex = null;
 
     const newImage = new Image();
 
@@ -105,9 +126,17 @@ function showPhoto(index) {
         currentIndex = index;
         currentPhotoId = selectedPhoto.id;
 
-        imageElement.classList.remove("changing");
+        waitingMessage.classList.add("hidden");
+        photoStage.classList.remove("hidden");
 
         isChanging = false;
+
+        // Process a pending request if one arrived during loading.
+        if (pendingIndex !== null) {
+            const nextIndex = pendingIndex;
+            pendingIndex = null;
+            showPhoto(nextIndex);
+        }
 
     };
 
@@ -115,9 +144,13 @@ function showPhoto(index) {
 
         console.error("Unable to load slideshow image.");
 
-        imageElement.classList.remove("changing");
-
         isChanging = false;
+
+        if (pendingIndex !== null) {
+            const nextIndex = pendingIndex;
+            pendingIndex = null;
+            showPhoto(nextIndex);
+        }
 
     };
 
@@ -126,10 +159,10 @@ function showPhoto(index) {
 }
 
 
-// Move to the next photograph.
+// Automatically move to the next photograph
 function nextPhoto() {
 
-    if (photos.length <= 1) {
+    if (isPaused || photos.length <= 1) {
         return;
     }
 
@@ -138,13 +171,13 @@ function nextPhoto() {
 }
 
 
-// Start slideshow.
+// Start slideshow
 loadPhotos();
 
 
-// Change image every five seconds.
+// Change photograph every 2 seconds
 setInterval(nextPhoto, SLIDE_DURATION);
 
 
-// Check for newly uploaded photographs every five seconds.
+// Check for new photographs every 5 seconds
 setInterval(loadPhotos, REFRESH_INTERVAL);
