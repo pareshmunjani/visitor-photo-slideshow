@@ -1,81 +1,141 @@
 # Visitor Photo Slideshow
 
-A simple web application that collects photographs from visitors and automatically displays them in a shared slideshow.
+A simple web application that allows visitors to upload their photographs and view them in an automatic slideshow. Each visitor can see only their own uploaded photographs.
 
 ## 1. Project Overview
 
-The Visitor Photo Slideshow application allows visitors to submit their name, email address and photographs.
+The Visitor Photo Slideshow is a college practical assignment developed using Core PHP, HTML, CSS, JavaScript and MySQL.
 
-Uploaded photographs are stored on the server and displayed automatically on a shared slideshow screen.
+The application collects a visitor's name, email address and photographs. It stores visitor information and photo details in a MySQL database and saves the actual image files in the server's uploads directory.
 
-When an existing visitor returns, the application identifies them using their email address. Their previously uploaded photographs remain available, and newly submitted photographs are added to the existing collection.
+When a visitor uploads photographs, the application displays a slideshow containing only the photographs associated with that visitor.
+
+If the same visitor visits again using the same email address, their previously uploaded photographs remain available along with the newly uploaded photographs.
 
 ## 2. Objectives
 
-- Collect visitor information and photographs.
+- Collect visitor details and photographs.
 - Identify returning visitors using their email address.
-- Retain previously uploaded photographs.
-- Display all visitors' photographs in one shared slideshow.
-- Automatically detect newly uploaded photographs.
-- Provide Pause and Play controls for the slideshow.
+- Store visitor information and photo details in MySQL.
+- Display photographs in an automatic slideshow.
+- Ensure each visitor sees only their own photographs.
+- Allow visitors to return to the upload page easily.
 
 ## 3. Technology Stack
 
 | Component | Technology |
 |---|---|
-| Backend | Core PHP 8+ |
+| Backend | Core PHP 8 or later |
 | Frontend | HTML, CSS, JavaScript |
 | Database | MySQL |
-| Local server | XAMPP |
-| Database access | PHP PDO |
+| Local development | XAMPP |
+| Database connectivity | PHP PDO |
 | Version control | Git and GitHub |
 
-No additional frameworks are required.
+No Laravel, React, Node.js, Python or other application frameworks are used.
 
 ## 4. Main Features
 
-### Visitor Registration and Identification
-- Visitors enter their name and email address.
-- Email addresses are trimmed and converted to lowercase.
-- Email address is used to identify returning visitors.
-- Returning visitors reuse their existing visitor record.
+### Visitor Information
+
+- Collects visitor name and email address.
+- Uses email address as the unique visitor identifier.
+- Reuses an existing visitor record when the same email is submitted again.
 
 ### Photo Upload
-- A visitor can upload 1–5 photographs per submission.
-- Maximum file size is 5 MB per photograph.
-- Supported formats: JPG, JPEG, PNG and WebP.
-- Server-side validation checks actual MIME type and image content.
-- Uploaded files receive unique filenames.
-- Visitor consent is required before photographs are submitted.
 
-### Shared Photo Slideshow
-- Displays photographs uploaded by all visitors.
+- Supports JPG, JPEG, PNG and WebP images.
+- Allows 1–5 photographs per submission.
+- Maximum file size is 5 MB per photograph.
+- Validates image MIME type and actual image content on the server.
+- Generates unique filenames for uploaded photographs.
+- Requires visitor consent before uploading photographs.
+
+### Visitor-Specific Slideshow
+
+- Displays only the photographs belonging to the current visitor.
+- Uses PHP sessions to maintain the visitor ID after a successful upload.
+- Retrieves photographs from the database using the visitor ID.
 - Automatically changes photographs every 2 seconds.
 - Checks for newly uploaded photographs every 5 seconds.
 - Provides Pause and Play controls.
-- Keeps the complete photograph visible without cropping.
+- Includes a photo counter.
+- Displays images without cropping them.
 
 ### Returning Visitors
-- Previous photographs are retained.
-- New photographs are added to the existing collection.
-- The 5-photo limit applies to each submission, not to the visitor's lifetime total.
 
-### Two Usage Modes
+When an existing visitor submits the same email address again:
 
-**Mode 1: Phone Upload and TV Display**
+- The existing visitor record is reused.
+- Previously uploaded photographs are retained.
+- Newly uploaded photographs are added.
+- The slideshow displays both old and new photographs belonging to that visitor.
 
-1. Open the slideshow page on a TV or computer.
-2. Visitors open the upload page on their phones.
-3. Visitors submit their photographs.
-4. New photographs appear automatically on the shared display.
+### Navigation
 
-**Mode 2: Same Computer**
+- Provides a Back to Home link on the slideshow page.
+- Does not require a separate login or logout system.
 
-1. A visitor submits photographs using the upload page.
-2. After successful submission, the browser automatically redirects to the slideshow.
-3. The slideshow displays the shared collection.
+## 5. Application Workflow
 
-## 5. Project Structure
+1. The visitor opens the upload page.
+2. The visitor enters their name and email address.
+3. The visitor selects photographs and provides consent.
+4. The server validates the submitted information and photographs.
+5. The application creates a new visitor record or identifies an existing visitor using the email address.
+6. Photograph files are saved in the uploads directory.
+7. Photograph details are inserted into the database with the corresponding visitor ID.
+8. The visitor ID is stored in the PHP session.
+9. The visitor is redirected to the slideshow page.
+10. The slideshow API retrieves only that visitor's photographs.
+11. The slideshow automatically displays the photographs.
+
+## 6. Visitor Identification and Privacy
+
+The application uses email addresses to identify returning visitors and PHP sessions to remember the visitor ID during the current browser session.
+
+The slideshow API does not accept a visitor ID from the browser. It obtains the ID from the server-side PHP session and uses it in a prepared SQL query.
+
+This prevents the slideshow API from returning photographs belonging to other visitor IDs.
+
+**Important:** This is session-based visitor identification, not full account authentication. There are no passwords, registered accounts, login or logout features. A person who knows another visitor's email address could submit an upload using that address. The application is designed as a simple college practical assignment, not a production-grade identity system.
+
+## 7. Database Design
+
+The application uses two MySQL tables.
+
+### visitors
+
+Stores visitor information.
+
+| Column | Description |
+|---|---|
+| visitor_id | Primary key |
+| name | Visitor name |
+| email | Unique visitor email |
+| created_at | Record creation time |
+| updated_at | Last update time |
+
+### photos
+
+Stores photograph metadata.
+
+| Column | Description |
+|---|---|
+| photo_id | Primary key |
+| visitor_id | Foreign key referencing visitors |
+| stored_filename | Unique image filename |
+| mime_type | Image MIME type |
+| file_size_bytes | Image size |
+| consent_given | Consent status |
+| consent_at | Consent timestamp |
+| uploaded_at | Upload timestamp |
+
+Each photograph is associated with a visitor through `visitor_id`.
+
+The actual photograph files are stored in the `uploads/` directory. The database stores their filenames and related information.
+
+## 8. Project Structure
 
 ```text
 visitor-photo-slideshow/
@@ -96,6 +156,7 @@ visitor-photo-slideshow/
 ├── assets/
 │   ├── css/
 │   │   └── style.css
+│   │
 │   └── js/
 │       ├── upload.js
 │       └── slideshow.js
@@ -114,12 +175,12 @@ visitor-photo-slideshow/
 ├── .env.example
 ├── .gitignore
 ├── README.md
-├── ARCHITECTURE.md
 ├── ASSUMPTIONS.md
-└── AI_LOG.md
+├── AI_LOG.md
+└── ARCHITECTURE.md
 ```
 
-## 6. Installation and Setup
+## 9. Installation and Setup
 
 ### Requirements
 
@@ -129,39 +190,39 @@ visitor-photo-slideshow/
 - Web browser
 - Git
 
-### Step 1: Clone the repository
+### Step 1: Clone the Repository
+
+Clone the project into the XAMPP `htdocs` directory.
 
 ```bash
 git clone YOUR_GITHUB_REPOSITORY_URL
 ```
 
-Place the project folder inside:
+The project folder should be:
 
 ```text
-C:\xampp\htdocs\
+C:\xampp\htdocs\visitor-photo-slideshow
 ```
 
 ### Step 2: Start XAMPP
 
-Start Apache and MySQL using the XAMPP Control Panel.
+Open the XAMPP Control Panel and start:
 
-### Step 3: Create the database
+- Apache
+- MySQL
+
+### Step 3: Create the Database
 
 1. Open phpMyAdmin.
-2. Import `database/schema.sql`.
-3. The database and required tables will be created.
+2. Import the `database/schema.sql` file.
+3. Confirm that the `visitor_slideshow` database has been created.
+4. Confirm that the `visitors` and `photos` tables exist.
 
-Database name:
+### Step 4: Configure Environment Variables
 
-```text
-visitor_slideshow
-```
+Create a `.env` file in the project root directory.
 
-### Step 4: Configure environment variables
-
-Copy `.env.example` to `.env` in the project root.
-
-Configure the database details:
+Use the following local development configuration:
 
 ```env
 DB_HOST=localhost
@@ -171,77 +232,83 @@ DB_USER=root
 DB_PASS=
 ```
 
-Use the correct password if your local MySQL installation has one.
+Adjust the values if your local MySQL configuration is different.
 
-Do not commit `.env` to GitHub.
+The `.env` file is excluded from Git. Only `.env.example` is included in the repository.
 
-### Step 5: Check upload directory
+### Step 5: Check the Upload Directory
 
-Ensure the `uploads` directory exists and is writable by PHP.
+Ensure the following directory exists and is writable by PHP:
 
-### Step 6: Open the application
+```text
+uploads/
+```
 
-Visitor upload page:
+### Step 6: Open the Application
+
+Visit:
 
 ```text
 http://localhost/visitor-photo-slideshow/
 ```
 
-Shared slideshow:
+The visitor upload page should appear.
 
-```text
-http://localhost/visitor-photo-slideshow/display.php
-```
+## 10. Security Measures
 
-## 7. Database Design
+The application includes the following basic security measures:
 
-The application uses two database tables:
+- PDO database connectivity.
+- Prepared statements for database operations.
+- Server-side input validation.
+- Server-side image MIME validation.
+- Actual image content validation.
+- Maximum file size and upload count restrictions.
+- Unique filenames for uploaded photographs.
+- PHP session-based visitor identification.
+- Visitor-specific photo retrieval.
+- Protection for configuration and database files using `.htaccess`.
+- Directory listing disabled.
+- Uploaded PHP-like files blocked through upload-directory configuration.
+- Visitor email addresses are not returned by the slideshow API.
 
-- `visitors` – stores visitor names and email addresses.
-- `photos` – stores photograph filenames, metadata, consent and visitor references.
+## 11. Testing
 
-Photograph files are stored in the `uploads` directory. MySQL stores their filenames and related information.
+The application should be tested for:
 
-See `ARCHITECTURE.md` for the database structure.
+- New visitor registration through photo upload.
+- Returning visitor identification using the same email.
+- Multiple photographs in one submission.
+- Invalid file types.
+- Files exceeding the maximum size.
+- More than five photographs in one submission.
+- Missing consent.
+- Separate visitors using separate browser sessions.
+- Visitor-specific slideshow results.
+- Automatic slideshow playback.
+- Pause and Play functionality.
+- Back to Home navigation.
+- Automatic detection of newly uploaded photographs.
 
-## 8. Security Measures
+See `tests/MANUAL_TEST_PLAN.md` for the detailed test cases and their results.
 
-- PDO prepared statements for database operations.
-- Server-side file type and image-content validation.
-- Maximum file-size enforcement.
-- Randomly generated filenames.
-- Visitor consent required for photo submission.
-- Uploaded PHP files are blocked from execution through Apache configuration.
-- Directory listing is disabled.
-- Direct access to environment and configuration files is restricted.
-- Technical database errors are logged rather than directly displayed.
+## 12. Data Storage and Retention
 
-## 9. Photo Retention
+Visitor records and photograph metadata are stored in MySQL. Photograph files are stored in the `uploads/` directory.
 
-Uploaded photographs remain available in the shared slideshow until an administrator manually removes them.
+Photographs remain stored until an administrator manually removes them. The project does not include an administrator dashboard or automatic deletion system.
 
-There is no automatic deletion or administrative dashboard in this assignment.
+## 13. Limitations
 
-## 10. Testing
+- No user account or password system.
+- No login or logout functionality.
+- No administrator dashboard.
+- No automatic photo deletion.
+- Designed for local demonstration using XAMPP.
+- Session-based visitor identification is not equivalent to secure account authentication.
 
-Manual test cases and their results are maintained in:
+## 14. Conclusion
 
-```text
-tests/MANUAL_TEST_PLAN.md
-```
+The Visitor Photo Slideshow demonstrates how Core PHP, MySQL, HTML, CSS and JavaScript can be combined to create a simple photo-upload and slideshow application.
 
-Only tests actually performed should be marked as passed.
-
-## 11. Project Scope
-
-This is a short academic practical assignment demonstrating:
-
-- PHP form handling
-- File uploads
-- MySQL database operations
-- Visitor identification
-- JavaScript slideshow functionality
-- Basic application security
-- Git and GitHub usage
-
-The application is intentionally kept simple and does not include unnecessary frameworks or commercial-scale features.
+It supports new and returning visitors, stores photographs with visitor associations, and displays each visitor's own photographs through a session-based slideshow.

@@ -1,124 +1,180 @@
 # AI Interaction Log – Visitor Photo Slideshow
 
-## 1. Introduction
+## 1. Purpose
 
-AI tools were used during the planning, development, debugging and improvement of the Visitor Photo Slideshow application.
+This document records important ways AI assistance was used during the development of the Visitor Photo Slideshow college practical assignment.
 
-AI assistance helped with understanding requirements, generating code suggestions, troubleshooting errors, improving the user interface and reviewing application security.
+AI was used as a development assistant for understanding requirements, planning the application, writing and reviewing code, troubleshooting errors, improving the interface and preparing project documentation.
 
-The developer reviewed and tested the suggestions before using them in the project.
+The application was implemented and tested by the student using the local XAMPP environment.
 
-## 2. Important AI Interactions
+## 2. AI-Assisted Development Activities
 
-### Interaction 1 – Project Planning
+### Interaction 1: Understanding the Assignment
 
-**Task:** Understand the assignment requirements and finalize the project approach.
-
-**AI assistance:**
-- Helped identify the required application features.
-- Suggested a simple project structure.
-- Helped finalize Core PHP, HTML, CSS, JavaScript and MySQL.
-
-**Outcome:** A simple technology stack and implementation plan were finalized.
-
-### Interaction 2 – Visitor Identification
-
-**Task:** Design a method to identify returning visitors.
+**Task:** Understand the Visitor Photo Slideshow assignment requirements.
 
 **AI assistance:**
-- Suggested using email as the unique visitor identifier.
-- Explained how an existing visitor record can be reused.
-- Suggested adding new photographs without deleting previous photographs.
+- Reviewed the assignment objective.
+- Identified the main application features.
+- Helped distinguish the short college practical assignment from a large commercial project.
+- Helped define a simple implementation scope.
 
-**Outcome:** Returning visitors are identified using their email addresses.
+**Outcome:** A clear project requirement and feature list was established.
 
-### Interaction 3 – Secure Photo Upload
+### Interaction 2: Selecting the Technology Stack
 
-**Task:** Implement photo uploads with server-side validation.
-
-**AI assistance:**
-- Helped implement file-size validation.
-- Suggested MIME-type verification using PHP Fileinfo.
-- Suggested checking actual image content.
-- Helped implement unique filenames and database transactions.
-
-**Outcome:** The upload process includes server-side validation and database error handling.
-
-### Interaction 4 – PHP Compatibility Correction
-
-**Task:** Review PHP compatibility for the upload implementation.
-
-**AI suggestion:** An earlier version used the `never` return type for a redirect helper function.
-
-**Issue:** The `never` return type requires PHP 8.1 or later, while the project requirement is PHP 8 or later.
-
-**Correction:** The return type was changed to `void` for PHP 8.0 compatibility.
-
-**Outcome:** The helper function supports the intended PHP 8+ compatibility range.
-
-### Interaction 5 – Slideshow CSS Class Correction
-
-**Task:** Improve the slideshow layout and heading appearance.
-
-**AI suggestion:** An earlier CSS suggestion used the class name `slideshow-header`.
-
-**Issue:** The actual HTML used the class name `slideshow-heading`, so the suggested styling would not target the heading.
-
-**Correction:** The CSS was revised to use the actual class name from the HTML.
-
-**Outcome:** The slideshow heading styling was aligned with the existing page structure.
-
-### Interaction 6 – Slideshow Timing
-
-**Task:** Configure automatic photo changes and detection of newly uploaded photographs.
+**Task:** Finalize suitable technologies for the assignment.
 
 **AI assistance:**
-- Helped configure automatic slideshow transitions.
-- Helped separate the slide duration from the photo-refresh interval.
+- Compared the project requirements with possible technologies.
+- Helped finalize Core PHP, HTML, CSS, JavaScript, MySQL and XAMPP.
+- Recommended PDO and prepared statements for database operations.
+- Avoided unnecessary frameworks and technologies.
 
-**Outcome:** The finalized settings are:
-- Slide duration: 2 seconds.
-- Photo refresh interval: 5 seconds.
+**Outcome:** A simple technology stack suitable for the practical assignment was finalized.
 
-### Interaction 7 – Slideshow User Interface
+### Interaction 3: Project Structure and Database Design
 
-**Task:** Improve the slideshow experience.
-
-**AI assistance:**
-- Suggested a full-screen layout.
-- Helped use `object-fit: contain` to prevent image cropping.
-- Helped add Pause and Play controls.
-- Suggested improvements to text contrast and layout.
-
-**Outcome:** The slideshow interface was refined for browser and TV display.
-
-### Interaction 8 – Security Review
-
-**Task:** Review application security and configuration protection.
+**Task:** Plan the project folders and database.
 
 **AI assistance:**
-- Reviewed PHP upload validation.
-- Reviewed PDO database connection settings.
-- Reviewed environment-variable loading.
-- Suggested Apache access restrictions for configuration and database folders.
+- Suggested a structured project directory.
+- Designed the `visitors` and `photos` database tables.
+- Explained the relationship between visitors and photographs.
+- Helped define the use of unique visitor email addresses and photo metadata.
 
-**Outcome:** Security configuration was reviewed and direct-access protection was tested locally.
+**Outcome:** The project structure and two-table database design were established.
 
-## 3. AI Usage Summary
+### Interaction 4: Database Connection
 
-AI tools were used as development assistants rather than as a replacement for understanding or testing the application.
+**Task:** Configure the PHP application to connect to MySQL.
 
-The developer reviewed generated code, applied corrections, tested application behaviour and maintained the project using Git and GitHub.
+**AI assistance:**
+- Helped create the environment configuration loader.
+- Helped configure the PDO database connection.
+- Explained PDO exception handling and prepared statements.
+- Helped troubleshoot database connection issues.
 
-## 4. Limitations
+**Outcome:** The application successfully connected to the MySQL database through PDO.
 
-- AI-generated code may contain errors.
-- Suggestions must be checked against the actual project files.
-- Generated code must be tested in the local environment.
-- Security configurations must be verified rather than assumed to work.
+### Interaction 5: Visitor Upload Form
 
-## 5. Conclusion
+**Task:** Build the visitor photo-upload interface.
 
-AI assistance helped accelerate the development process, explain programming concepts, identify implementation issues and improve the application.
+**AI assistance:**
+- Helped create the visitor form using HTML and PHP.
+- Added name, email, photograph selection and consent fields.
+- Helped implement client-side image previews and validation.
+- Helped improve the form's visual appearance using CSS.
 
-The final application was developed and tested through an iterative process involving AI suggestions, developer review and practical verification.
+**Outcome:** The visitor upload form was created and tested.
+
+### Interaction 6: Secure Photo Upload Processing
+
+**Task:** Implement server-side photograph upload handling.
+
+**AI assistance:**
+- Helped implement server-side input validation.
+- Added image MIME type and image-content checks.
+- Added file-size and upload-count restrictions.
+- Implemented unique filenames.
+- Used PDO prepared statements and database transactions.
+- Added cleanup of files when database processing fails.
+
+**Outcome:** The application could validate and store supported photographs.
+
+### Interaction 7: Slideshow Implementation
+
+**Task:** Create an automatic photograph slideshow.
+
+**AI assistance:**
+- Helped develop the slideshow display page.
+- Helped implement the slideshow API.
+- Added automatic playback, Pause and Play controls.
+- Added periodic checks for newly uploaded photographs.
+- Helped improve image fitting, text contrast and layout styling.
+
+**Outcome:** The slideshow interface and automatic playback functionality were implemented.
+
+### Interaction 8: Troubleshooting and Code Improvements
+
+**Task:** Resolve development issues and improve implementation quality.
+
+**AI assistance:**
+- Helped troubleshoot upload-directory naming issues.
+- Helped review PHP validation and error handling.
+- Helped correct slideshow layout and styling issues.
+- Recommended keeping code compatible with the selected PHP version.
+- Helped prepare security checks for protected configuration and upload directories.
+
+**Outcome:** Several implementation and interface issues were corrected during development.
+
+### Interaction 9: Visitor-Specific Slideshow Correction
+
+**Task:** Correct the behaviour where photographs from multiple visitors appeared in the same slideshow.
+
+**Problem identified:**
+
+The initial slideshow API retrieved every photograph from the `photos` table without filtering by visitor ID. As a result, photographs belonging to different visitors appeared together.
+
+The application also did not provide a clear way to return to the upload page.
+
+**AI assistance:**
+- Reviewed `upload.php`, `display.php` and `api/slideshow-photos.php`.
+- Identified that the visitor ID was not stored in the PHP session after upload.
+- Recommended storing the visitor ID in the session after a successful database transaction.
+- Updated the slideshow page to check for a valid visitor session.
+- Updated the API to retrieve photographs using a prepared SQL query with a visitor ID condition.
+- Added a Back to Home link.
+- Kept the implementation simple without adding login, logout or password functionality.
+
+**Outcome:**
+
+The student implemented the changes and confirmed that the visitor-specific slideshow was working.
+
+Each visitor now sees only photographs associated with their visitor ID in the current PHP session.
+
+### Interaction 10: Project Documentation
+
+**Task:** Prepare and update project documentation.
+
+**AI assistance:**
+- Helped prepare the README.
+- Helped document the system architecture and database relationship.
+- Helped record project assumptions and design decisions.
+- Helped prepare a manual testing plan.
+- Helped maintain this AI interaction log.
+
+**Outcome:** Project documentation was prepared for the GitHub repository and updated to reflect visitor-specific slideshow behaviour.
+
+## 3. Important Development Corrections
+
+The following corrections were made during development:
+
+| Issue | Correction |
+|---|---|
+| Upload directory was unavailable | Corrected the directory name to `uploads` |
+| Initial database connection issues | Reviewed XAMPP and PDO configuration |
+| Photo display layout was not suitable | Improved slideshow CSS and image fitting |
+| All visitors' photos appeared together | Added PHP session-based visitor identification and visitor-specific SQL filtering |
+| No clear return navigation | Added Back to Home link |
+
+## 4. Final AI Usage Summary
+
+AI assistance was used for:
+
+- Requirement analysis.
+- Technology selection.
+- Project structure planning.
+- Database design.
+- PHP code development.
+- Frontend styling.
+- JavaScript functionality.
+- Error troubleshooting.
+- Security and validation improvements.
+- Documentation preparation.
+
+The student reviewed, implemented and tested the suggested changes in the local development environment.
+
+This log summarizes the important AI-assisted development activities and is not intended to represent a complete transcript of every conversation.

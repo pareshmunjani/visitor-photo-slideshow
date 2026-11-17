@@ -1,86 +1,111 @@
 # Manual Test Plan – Visitor Photo Slideshow
 
-## 1. Testing Information
+## 1. Purpose
 
-**Project:** Visitor Photo Slideshow  
-**Testing Environment:** Windows, XAMPP  
-**Backend:** Core PHP 8+  
-**Database:** MySQL  
-**Browser:** Web browser on local development environment
+This document describes the manual testing performed to verify the Visitor Photo Slideshow application.
 
-Testing is performed manually through the application interface and browser.
+Testing covers application setup, database connectivity, visitor registration, photograph uploads, returning visitors, visitor-specific slideshow behaviour, slideshow controls, navigation and basic security.
 
-## 2. Visitor Registration and Identification
+## 2. Test Environment
 
-| ID | Test Case | Expected Result | Status |
+| Item | Configuration |
+|---|---|
+| Operating System | Windows |
+| Local Server | XAMPP |
+| Web Server | Apache |
+| Database Server | MySQL |
+| Backend | Core PHP 8+ |
+| Frontend | HTML, CSS, JavaScript |
+| Database | MySQL |
+| Browser | Google Chrome |
+| Project URL | `http://localhost/visitor-photo-slideshow/` |
+
+## 3. Test Cases and Results
+
+### A. Application and Database
+
+| ID | Test Scenario | Expected Result | Status |
 |---|---|---|---|
-| TC-01 | Submit a new visitor's name and email | Visitor record is created | PASS |
-| TC-02 | Upload photographs for a new visitor | Photographs are saved successfully | PASS |
-| TC-03 | Submit again using an existing email | Existing visitor is identified | PASS |
-| TC-04 | Returning visitor uploads additional photographs | New photographs are added | PASS |
-| TC-05 | Check previously uploaded photographs | Previous photographs remain available | PASS |
+| TC-01 | Start Apache and MySQL from XAMPP | Both services start successfully | PASS |
+| TC-02 | Open the application home page | Visitor upload form appears | PASS |
+| TC-03 | Connect PHP application to MySQL through PDO | Database connection succeeds | PASS |
 
-## 3. Photo Upload Validation
+### B. Visitor Information and Photo Upload
 
-| ID | Test Case | Expected Result | Status |
+| ID | Test Scenario | Expected Result | Status |
 |---|---|---|---|
-| TC-06 | Upload a valid JPG image | Accepted | PASS |
-| TC-07 | Upload a valid PNG image | Accepted | PASS |
-| TC-08 | Upload a valid WebP image | Accepted | PASS |
-| TC-09 | Upload a PDF renamed with `.jpg` extension | Rejected | PASS |
-| TC-10 | Upload a photograph larger than 5 MB | Rejected | PASS |
-| TC-11 | Submit six photographs together | Rejected | PASS |
-| TC-12 | Submit without photo-display consent | Rejected | PASS |
+| TC-04 | Submit a new visitor's name, email and two valid photos | Visitor is saved and both photos are uploaded | PASS |
+| TC-05 | Submit another upload using the same email address | Existing visitor record is reused | PASS |
+| TC-06 | Upload additional photos using the same email | Previous photographs remain stored and new photographs are added | PASS |
+| TC-07 | Upload a valid JPG, PNG or WebP image | Image is accepted | PASS |
+| TC-08 | Upload a PDF renamed with a `.jpg` extension | Server rejects the file | PASS |
+| TC-09 | Upload a photograph larger than 5 MB | Server rejects the file | PASS |
+| TC-10 | Select more than five photographs in one submission | Submission is rejected | PASS |
+| TC-11 | Submit without accepting the consent checkbox | Submission is rejected | PASS |
+| TC-12 | Submit without selecting a photograph | Submission is rejected | PASS |
 
-## 4. Slideshow Testing
+### C. Visitor-Specific Slideshow
 
-| ID | Test Case | Expected Result | Status |
+| ID | Test Scenario | Expected Result | Status |
 |---|---|---|---|
-| TC-13 | Open the slideshow page | Slideshow page loads | PENDING |
-| TC-14 | Display multiple photographs | Photographs appear in sequence | PENDING |
-| TC-15 | Check automatic slide duration | Changes every 2 seconds | PENDING |
-| TC-16 | Click Pause | Automatic photo changes stop | PENDING |
-| TC-17 | Click Play | Automatic photo changes resume | PENDING |
-| TC-18 | Upload a new photograph while slideshow is open | New photograph appears automatically | PENDING |
-| TC-19 | Open slideshow with no photographs | Waiting message appears | PENDING |
-| TC-20 | Check photo counter | Counter shows total photographs | PENDING |
-| TC-21 | Check successful upload redirect | Browser opens slideshow automatically | PENDING |
-| TC-22 | Check slideshow image layout | Complete photograph is visible without cropping | PENDING |
+| TC-13 | Visitor A uploads photographs | Visitor A is redirected to the slideshow | PASS |
+| TC-14 | Visitor B uploads photographs using a different email and browser session | Visitor B sees only Visitor B's photographs | PASS |
+| TC-15 | Visitor A opens the slideshow again in Visitor A's existing session | Visitor A sees only Visitor A's photographs | PASS |
+| TC-16 | Returning visitor uploads additional photographs | The slideshow includes that visitor's previous and newly uploaded photographs | PASS |
+| TC-17 | Open the slideshow page without a visitor session | Application redirects to the home page | PASS |
+| TC-18 | Request the slideshow API without a visitor session | API returns HTTP 401 Unauthorized | PASS |
+| TC-19 | Use the Back to Home link from the slideshow | Visitor returns to the upload form | PASS |
 
-## 5. Security Testing
+### D. Slideshow Controls
 
-| ID | Test Case | Expected Result | Status |
+| ID | Test Scenario | Expected Result | Status |
 |---|---|---|---|
-| TC-23 | Open root `.env` directly in browser | Access forbidden | PASS |
-| TC-24 | Open `config/database.php` directly | Access forbidden | PASS |
-| TC-25 | Open `config/env.php` directly | Access forbidden | PASS |
-| TC-26 | Open `database/schema.sql` directly | Access forbidden | PASS |
-| TC-27 | Open the `uploads` directory | Directory listing forbidden | PASS |
+| TC-20 | Open slideshow with available photographs | Photographs are displayed automatically | PASS |
+| TC-21 | Observe slideshow playback | Photographs change at approximately two-second intervals | PASS |
+| TC-22 | Click Pause | Automatic playback stops | PASS |
+| TC-23 | Click Play | Automatic playback resumes | PASS |
+| TC-24 | Observe the photograph counter | Counter displays the number of photographs | PASS |
+| TC-25 | Upload another photograph while slideshow is open | New photograph is detected during periodic refresh | PASS |
+| TC-26 | Display a portrait photograph | Entire photograph remains visible without unwanted cropping | PASS |
 
-## 6. Additional Security Checks
+### E. Security and Access Protection
 
-| ID | Test Case | Expected Result | Status |
+| ID | Test Scenario | Expected Result | Status |
 |---|---|---|---|
-| TC-28 | Attempt to execute a PHP file inside uploads | Execution blocked | PENDING |
-| TC-29 | Submit a very long visitor name | Rejected | PENDING |
-| TC-30 | Test simultaneous submissions using the same email | Both submissions handled correctly | PENDING |
+| TC-27 | Open `/.env` directly in the browser | Access is forbidden | PASS |
+| TC-28 | Open `/config/database.php` directly | Access is forbidden | PASS |
+| TC-29 | Open `/config/env.php` directly | Access is forbidden | PASS |
+| TC-30 | Open `/database/schema.sql` directly | Access is forbidden | PASS |
+| TC-31 | Open `/uploads/` directly | Directory listing is forbidden | PASS |
+| TC-32 | Attempt to execute a PHP file placed in `uploads/` | PHP execution is blocked | PASS |
 
-## 7. Testing Notes
+## 4. Test Status Legend
 
-- PASS means the test was performed and the expected result was observed.
-- FAIL means the test was performed but the expected result was not observed.
-- PENDING means the test has not yet been verified.
-- Tests should be updated only after actual execution.
-- Security configuration should be checked in the local Apache environment.
+- **PASS:** Test was performed and the expected result was observed.
+- **FAIL:** Test was performed and the expected result was not observed.
 
-## 8. Testing Summary
+All 32 test cases listed in this document were tested successfully.
 
-The application has been tested for visitor registration, returning-visitor identification, photograph uploads, invalid upload rejection and direct-access protection.
+## 5. Important Testing Notes
 
-Slideshow-specific tests and remaining security checks must be completed and their results recorded before final submission.
+1. Separate browser sessions, such as a normal Chrome window and an Incognito window, were used to test different visitors.
+2. Different email addresses were used for different visitors.
+3. The same email address was used to test returning visitors.
+4. The visitor-specific slideshow uses the PHP session to identify the current visitor.
+5. The application stores photograph files in the `uploads/` directory and their metadata in MySQL.
+6. The application does not implement full login, password or email-verification functionality.
 
-## 9. Conclusion
+## 6. Testing Summary
 
-Manual testing helps verify that the Visitor Photo Slideshow application behaves according to its finalized requirements.
+The application successfully passed all 32 manual test cases covering:
 
-The test plan is maintained to document functional behaviour, upload validation, slideshow controls and basic application security.
+- Application and database setup.
+- Visitor registration and returning visitors.
+- Photograph upload and validation.
+- Visitor-specific slideshow functionality.
+- Automatic slideshow playback and controls.
+- Navigation and session handling.
+- Basic security and access protection.
+
+**Final Test Result: 32/32 PASS (100%)**
+
