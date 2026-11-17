@@ -2,20 +2,24 @@
 <?php
 
 // Load environment variables from the project root .env file.
-
 $envFile = dirname(__DIR__) . '/.env';
 
-if (!file_exists($envFile)) {
-    throw new RuntimeException('.env file not found.');
+if (!is_file($envFile) || !is_readable($envFile)) {
+    throw new RuntimeException(
+        'Environment configuration file is missing or unreadable.'
+    );
 }
 
-$lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$lines = file(
+    $envFile,
+    FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES
+);
 
 foreach ($lines as $line) {
 
     $line = trim($line);
 
-    // Ignore comments.
+    // Ignore comments and blank lines.
     if ($line === '' || str_starts_with($line, '#')) {
         continue;
     }
@@ -30,10 +34,13 @@ foreach ($lines as $line) {
     $name = trim($name);
     $value = trim($value);
 
-    // Remove surrounding quotes if present.
+    // Accept only valid environment-variable names.
+    if (!preg_match('/^[A-Z_][A-Z0-9_]*$/i', $name)) {
+        continue;
+    }
+
+    // Remove surrounding quotes.
     $value = trim($value, "\"'");
 
-    if ($name !== '') {
-        $_ENV[$name] = $value;
-    }
+    $_ENV[$name] = $value;
 }
