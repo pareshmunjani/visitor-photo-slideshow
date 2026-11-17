@@ -12,3 +12,13 @@ The application uses Core PHP to process visitor photo submissions.
 - PDO prepared statements for database operations.
 - MySQL transactions for photo record insertion.
 - Consent is recorded for each uploaded photo.
+
+## Slideshow
+
+Open the following page on a computer or smart TV:
+
+http://localhost/visitor-photo-slideshow/display.php
+
+The slideshow displays uploaded photographs one at a time,
+changes photographs every five seconds, and checks for
+new uploads automatically every five seconds.
